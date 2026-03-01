@@ -7,8 +7,9 @@ class HomeViewController: NSViewController, NSTableViewDelegate, NSTableViewData
 
     let tableView = NSTableView()
     let scrollView = NSScrollView()
-    let addButton = NSButton(title: "Add Command", target: nil, action: nil)
-    let deleteButton = NSButton(title: "Delete", target: nil, action: nil)
+
+    let addButton = NSButton(image: NSImage(systemSymbolName: "plus", accessibilityDescription: "Add Command") ?? NSImage(), target: nil, action: nil)
+    let deleteButton = NSButton(image: NSImage(systemSymbolName: "trash", accessibilityDescription: "Delete Command") ?? NSImage(), target: nil, action: nil)
 
     let detailContainerView = NSView()
     var currentDetailVC: CommandEditorViewController?
@@ -21,6 +22,9 @@ class HomeViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         super.viewDidLoad()
         setupUI()
         fetchCommands()
+
+        addButton.title = "Add"
+        deleteButton.title = "Delete"
 
         addButton.target = self
         addButton.action = #selector(addCommand)

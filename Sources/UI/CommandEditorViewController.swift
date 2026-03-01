@@ -10,15 +10,17 @@ class CommandEditorViewController: NSViewController, NSTextFieldDelegate {
     let templateField = NSTextField()
     let workDirField = NSTextField()
 
-    let addParamButton = NSButton(title: "Add Parameter {}", target: nil, action: nil)
-    let saveButton = NSButton(title: "Save", target: nil, action: nil)
-    let runButton = NSButton(title: "Run Command", target: nil, action: nil)
-    let stopButton = NSButton(title: "Stop", target: nil, action: nil)
+    let addParamButton = NSButton(image: NSImage(systemSymbolName: "plus.circle", accessibilityDescription: "Add Parameter") ?? NSImage(), target: nil, action: nil)
+    let saveButton = NSButton(image: NSImage(systemSymbolName: "square.and.arrow.down", accessibilityDescription: "Save") ?? NSImage(), target: nil, action: nil)
+    let runButton = NSButton(image: NSImage(systemSymbolName: "play.fill", accessibilityDescription: "Run Command") ?? NSImage(), target: nil, action: nil)
+    let stopButton = NSButton(image: NSImage(systemSymbolName: "stop.fill", accessibilityDescription: "Stop") ?? NSImage(), target: nil, action: nil)
 
     var outputTextView: NSTextView!
     var outputScrollView: NSScrollView!
 
     let paramsStackView = NSStackView()
+
+    let mainCard = CardView()
 
     let executor = CommandExecutor()
 
@@ -34,6 +36,17 @@ class CommandEditorViewController: NSViewController, NSTextFieldDelegate {
         nameField.delegate = self
         templateField.delegate = self
         workDirField.delegate = self
+
+        addParamButton.title = "Add Parameter {}"
+        saveButton.title = "Save"
+        runButton.title = "Run"
+        stopButton.title = "Stop"
+
+        // Setup colors for action buttons
+        runButton.isBordered = false
+        runButton.contentTintColor = NSColor.systemGreen
+        stopButton.isBordered = false
+        stopButton.contentTintColor = NSColor.systemRed
 
         addParamButton.target = self
         addParamButton.action = #selector(addParameterPlaceholder)
@@ -84,14 +97,21 @@ class CommandEditorViewController: NSViewController, NSTextFieldDelegate {
         controlsStack.alignment = .leading
         controlsStack.spacing = 10
         controlsStack.translatesAutoresizingMaskIntoConstraints = false
+        mainCard.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(controlsStack)
+        view.addSubview(mainCard)
+        mainCard.addSubview(controlsStack)
 
         NSLayoutConstraint.activate([
-            controlsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            controlsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            controlsStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            controlsStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10),
+            mainCard.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            mainCard.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            mainCard.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            mainCard.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10),
+
+            controlsStack.leadingAnchor.constraint(equalTo: mainCard.leadingAnchor, constant: 15),
+            controlsStack.trailingAnchor.constraint(equalTo: mainCard.trailingAnchor, constant: -15),
+            controlsStack.topAnchor.constraint(equalTo: mainCard.topAnchor, constant: 15),
+            controlsStack.bottomAnchor.constraint(equalTo: mainCard.bottomAnchor, constant: -15),
 
             nameField.widthAnchor.constraint(equalToConstant: 250),
             workDirField.widthAnchor.constraint(equalToConstant: 400),
@@ -132,7 +152,10 @@ class CommandEditorViewController: NSViewController, NSTextFieldDelegate {
             valueField.tag = index * 2 + 1 // Odds are values
             valueField.delegate = self
 
-            let removeButton = NSButton(title: "X", target: self, action: #selector(removeParameter(_:)))
+            let removeButton = NSButton(image: NSImage(systemSymbolName: "minus.circle.fill", accessibilityDescription: "Remove Parameter") ?? NSImage(), target: self, action: #selector(removeParameter(_:)))
+            removeButton.title = ""
+            removeButton.isBordered = false
+            removeButton.contentTintColor = NSColor.systemRed
             removeButton.tag = index
 
             rowStack.addArrangedSubview(labelField)

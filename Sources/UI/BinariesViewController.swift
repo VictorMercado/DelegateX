@@ -7,7 +7,9 @@ class BinariesViewController: NSViewController, NSTableViewDelegate, NSTableView
 
     let tableView = NSTableView()
     let scrollView = NSScrollView()
-    let scanButton = NSButton(title: "Scan Common Paths", target: nil, action: nil)
+    let listCard = CardView()
+
+    let scanButton = NSButton(image: NSImage(systemSymbolName: "magnifyingglass", accessibilityDescription: "Scan") ?? NSImage(), target: nil, action: nil)
     let searchField = NSSearchField()
     let statusLabel = NSTextField(labelWithString: "Found 0 binaries.")
 
@@ -20,17 +22,21 @@ class BinariesViewController: NSViewController, NSTableViewDelegate, NSTableView
         setupUI()
         fetchBinaries()
 
+        scanButton.title = "Scan Common Paths"
+
         scanButton.target = self
         scanButton.action = #selector(scanPaths)
     }
 
     func setupUI() {
+        listCard.translatesAutoresizingMaskIntoConstraints = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scanButton.translatesAutoresizingMaskIntoConstraints = false
         searchField.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(scrollView)
+        view.addSubview(listCard)
+        listCard.addSubview(scrollView)
         view.addSubview(scanButton)
         view.addSubview(searchField)
         view.addSubview(statusLabel)
@@ -58,10 +64,15 @@ class BinariesViewController: NSViewController, NSTableViewDelegate, NSTableView
             scanButton.leadingAnchor.constraint(equalTo: searchField.trailingAnchor, constant: 10),
             scanButton.centerYAnchor.constraint(equalTo: searchField.centerYAnchor),
 
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            scrollView.topAnchor.constraint(equalTo: searchField.bottomAnchor, constant: 10),
-            scrollView.bottomAnchor.constraint(equalTo: statusLabel.topAnchor, constant: -10),
+            listCard.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            listCard.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            listCard.topAnchor.constraint(equalTo: searchField.bottomAnchor, constant: 10),
+            listCard.bottomAnchor.constraint(equalTo: statusLabel.topAnchor, constant: -10),
+
+            scrollView.leadingAnchor.constraint(equalTo: listCard.leadingAnchor, constant: 5),
+            scrollView.trailingAnchor.constraint(equalTo: listCard.trailingAnchor, constant: -5),
+            scrollView.topAnchor.constraint(equalTo: listCard.topAnchor, constant: 5),
+            scrollView.bottomAnchor.constraint(equalTo: listCard.bottomAnchor, constant: -5),
 
             statusLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             statusLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
